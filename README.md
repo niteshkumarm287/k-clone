@@ -73,4 +73,4 @@ k-clone --namespace-prefix staging
 
 ## License
 
-MIT
+NA
