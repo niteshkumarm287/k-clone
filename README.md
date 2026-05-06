@@ -1,76 +1,68 @@
 # k-clone
 
-A command-line tool to clone Kubernetes cronjobs or jobs interactively.
+`k-clone` is a command-line tool for cloning Kubernetes cronjobs or jobs. This is useful for running a one-off instance of a cronjob, or for creating a copy of a job to modify and run.
+
+## Features
+
+*   Clone a Kubernetes `cronjob` as a `job`.
+*   Clone an existing `job` to create a new one.
+*   Interactive selector to choose the resource to clone if not specified.
+*   Ability to specify the namespace to operate in.
+*   Ability to iterate over multiple namespaces with a given prefix.
+
+## Prerequisites
+
+*   `kubectl`: The Kubernetes command-line tool.
+*   `zsh`: The Z-shell.
+*   `jq`: A lightweight and flexible command-line JSON processor (only required for cloning jobs).
 
 ## Installation
 
-### Using Homebrew
+If you are on macOS and use Homebrew, you can install `k-clone` from the `homebrew-k-clone` tap:
 
 ```bash
 brew install niteshkumarm287/k-clone/k-clone
 ```
 
-Or tap first, then install:
-
-```bash
-brew tap niteshkumarm287/k-clone
-brew install k-clone
-```
-
-### Manual Installation
-
-```bash
-curl -o k-clone https://raw.githubusercontent.com/niteshkumarm287/k-clone/main/k-clone.zsh
-chmod +x k-clone
-mv k-clone /usr/local/bin/
-```
-
-## Prerequisites
-
-- `kubectl` - Kubernetes command-line tool
-- `jq` - Command-line JSON processor (required for cloning jobs)
+For other installation methods, please see the documentation in the `docs` directory.
 
 ## Usage
 
-```bash
-k-clone [options]
 ```
+Usage: k-clone [options]
 
-### Options
+A script to clone Kubernetes cronjobs or jobs.
 
-- `-t, --type <type>` - The type of resource to clone (`cronjob` or `job`). Defaults to `cronjob`.
-- `-n, --namespace <ns>` - The namespace to operate in. Defaults to the current namespace.
-- `--name <name>` - The name of the resource to clone. If not provided, an interactive selector will be shown.
-- `--namespace-prefix <p>` - A prefix to select multiple namespaces to iterate over.
-- `-h, --help` - Display help message.
+Options:
+  -t, --type <type>      The type of resource to clone (cronjob or job). Defaults to cronjob.
+  -n, --namespace <ns>   The namespace to operate in. Defaults to the current namespace.
+  --name <name>          The name of the resource to clone. If not provided, an interactive selector will be shown.
+  --namespace-prefix <p> A prefix to select multiple namespaces to iterate over.
+  -h, --help             Display this help message.
+```
 
 ### Examples
 
-Clone a cronjob interactively in the current namespace:
+**Clone a cronjob interactively:**
+
 ```bash
-k-clone
+k-clone -t cronjob -n my-namespace
 ```
 
-Clone a specific cronjob:
+This will show a list of cronjobs in the `my-namespace` namespace and prompt you to select one to clone.
+
+**Clone a specific job by name:**
+
 ```bash
-k-clone --name my-cronjob -n production
+k-clone -t job -n my-namespace --name my-job
 ```
 
-Clone a job:
+This will create a new job named `clone-of-my-job` in the `my-namespace` namespace.
+
+**Iterate over multiple namespaces:**
+
 ```bash
-k-clone -t job --name my-job -n production
+k-clone --namespace-prefix my-app-
 ```
 
-Clone across multiple namespaces with prefix:
-```bash
-k-clone --namespace-prefix staging
-```
-
-## How It Works
-
-- **Cronjob cloning**: Creates a new job from an existing cronjob using `kubectl create job --from=cronjob`
-- **Job cloning**: Fetches the job definition, removes immutable fields, and creates a new job with a `clone-of-` prefix
-
-## License
-
-NA
+This will find all namespaces with the `my-app-` prefix and prompt you to select which ones to operate on.
