@@ -66,3 +66,7 @@ k-clone --namespace-prefix my-app-
 ```
 
 This will find all namespaces with the `my-app-` prefix and prompt you to select which ones to operate on.
+
+## Development and review
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for local checks, configuration handling, and the review workflow.
